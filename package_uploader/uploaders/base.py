@@ -123,5 +123,7 @@ class BaseSSHUploader(BaseUploader):
 
     def upload_files(self, package_name, files):
         key = self.get_ssh_key()
-        with pysftp.Connection(host=self.ssh_host, username=self.ssh_user, private_key=key) as sftp:
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys.load('/etc/ssh/ssh_known_hosts')
+        with pysftp.Connection(host=self.ssh_host, username=self.ssh_user, private_key=key, cnopts=cnopts) as sftp:
             self._do_upload_files(sftp, package_name, files)
